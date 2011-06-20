@@ -1,0 +1,11 @@
+This is dummy data generator class for mysql.
+
+HOW TO USE?
+
+1) Copy all files to your web directory
+2) Call index.php 
+3) Follow instruction.
+
+TO-DO 
+generate enum type.
+
