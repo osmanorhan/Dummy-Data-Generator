@@ -10,8 +10,15 @@ $db_name = htmlentities($_POST['db_name']);
 $field_count = htmlentities($_POST['field_count']);
 
 if($db_name && $db_server  && $db_table && $field_count && $field_count > 1 ){
-$dummy = new Dummy($db_table);
-$dummy->connect($db_server,$db_user,$db_pass,$db_name);
+
+try {
+    $dummy = new Dummy($db_table);
+ 	$dummy->connect($db_server,$db_user,$db_pass,$db_name);
+} catch (Exception $e) {
+    echo 'We have a problem!: ',  $e->getMessage();
+}
+
+
 
 echo "Your table like this:<br><table><tr><th>Field Name</th><th>Type</th><th>Lenght</th></tr>";
 foreach($dummy->get_table_info() as $info){
@@ -29,5 +36,3 @@ foreach($dummy->get_table_info() as $info){
 }	
 	
 }
-
-

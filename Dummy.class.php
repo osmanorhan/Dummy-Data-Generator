@@ -6,7 +6,7 @@
  *  
  * @author Osman Orhan 
  * @Date 06-21-2011
- * @version 0.1
+ * @version 0.2
  */
 
 
@@ -23,6 +23,7 @@ class Dummy {
 	function connect($db_host, $db_user, $db_pass = '', $db_name) {
 		
 		$this->db = new mysqli ( $db_host, $db_user, $db_pass, $db_name );
+	
 	}
 	
 	function get_table_info() {
@@ -43,24 +44,25 @@ class Dummy {
 		
 		switch ($type) {
 			case 'tinyint' :
-				return rand ( - 127, 127 );
+				return rand ( 0, 255 );
 				break;
 			case 'smallint' :
-				return rand ( - 32768, 32768 );
+				return rand ( 0, 32768 );
 				break;
 			case 'int' :
 				if (preg_match ( "/id/", $name )) {
-					return '';
+					return FALSE;
 				} else {
-					return rand ( 0, 2147483648 );
+					return rand ( 0, 2147483647 );
+
 				}
 				break;
 			case 'float' :
-				$rand = rand ( 1, 359 );
+				$rand = rand ( 1, 358 );
 				return $rand * cos ( $rand );
 				break;
 			case 'double' :
-				$rand = rand ( 1, 359 );
+				$rand = rand ( 1, 358 );
 				return $rand * sin ( $rand );
 				break;
 			case 'bigint' :
@@ -162,6 +164,7 @@ class Dummy {
 	function insert_data($field_count) {
 		
 		$data = $this->get_table_info ();
+		$values ='';
 		for($i = 0; $i < $field_count; $i ++) {
 			$b = 0;
 			$values .= "(";
@@ -169,8 +172,13 @@ class Dummy {
 				if ($b !== 0) {
 					$values .= ',';
 				}
-				$values .= "'" . $this->get_data ( $val [1], $val [2], $val [0] ) . "'";
-				
+				$v = $this->get_data ( $val [1], $val [2], $val [0] );
+				if($v === FALSE){
+					$values .= "NULL";
+				}else{
+				$values .= "'" .$v. "'";
+					
+				}
 				$b ++;
 			}
 			$values .= "),";
@@ -179,6 +187,7 @@ class Dummy {
 		$values = substr ( $values, 0, - 1 );
 		$query = "INSERT INTO " . $this->table_name . " VALUES " . $values . "";
 		$end_query = $this->db->real_query ( $query );
+		var_dump($query);
 	
 	}
 
